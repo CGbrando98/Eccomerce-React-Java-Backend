@@ -21,10 +21,18 @@ public class ProductServicesImpl implements ProductServices{
 	@Autowired
 	private ProductDAO productDao;
 	
+	@Autowired
+	private UserDAO userDao;
+	
 	@Override
 	public void saveProduct(Product product) {
 		try {
-			product = productDao.save(product);
+			Optional<User> optional = userDao.findById(54);
+			Supplier<UserNotFoundException> exceptionSupplier = () -> new 
+					UserNotFoundException("User not found for id");
+
+			product.setProductUser(optional.orElseThrow(exceptionSupplier));
+			productDao.save(product);
 		} catch (Exception e) {
 			System.err.println("Error in saving");
 		}
@@ -41,10 +49,15 @@ public class ProductServicesImpl implements ProductServices{
 	@Override
 	public void updateProduct(Product newProduct, int id) throws ProductNotFoundException {
 		try {
-			newProduct.setId(id);
+			Optional<User> optional = userDao.findById(54);
+			Supplier<UserNotFoundException> exceptionSupplier = () -> new 
+					UserNotFoundException("User not found for id");
+
+			newProduct.setProductUser(optional.orElseThrow(exceptionSupplier));
+			newProduct.setId_product(id);
 			productDao.save(newProduct);
 			} catch (Exception e) {
-				throw new ProductNotFoundException("Could not find Product to delete with "
+				throw new ProductNotFoundException("Could not find Product to update with "
 						+ "id: "+ id);
 			}
 		}
@@ -68,6 +81,16 @@ public class ProductServicesImpl implements ProductServices{
 	@Override
 	public void saveBulkProducts(List<Product> products) {
 		try {
+			Optional<User> optional = userDao.findById(54);
+			Supplier<UserNotFoundException> exceptionSupplier = () -> new 
+					UserNotFoundException("User not found for id");
+			products.forEach(p -> {
+				try {
+					p.setProductUser(optional.orElseThrow(exceptionSupplier));
+				} catch (UserNotFoundException e) {
+					e.printStackTrace();
+				}
+			});
 			productDao.saveAll(products);
 		} catch (Exception e) {
 		System.err.println("Error in saving");
