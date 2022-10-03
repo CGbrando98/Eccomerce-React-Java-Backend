@@ -25,7 +25,7 @@ public class ReviewServicesImpl implements ReviewServices{
 	@Override
 	public void saveReview(Review review, int productid) {
 		try {
-			Optional<User> optionalUser = userDao.findById(54);
+			Optional<User> optionalUser = userDao.findById(1);
 			Supplier<UserNotFoundException> exceptionSupplierUser = () -> new 
 					UserNotFoundException("User not found for id");
 

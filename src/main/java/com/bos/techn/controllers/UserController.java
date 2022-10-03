@@ -21,6 +21,12 @@ public class UserController {
 		return new ResponseEntity<>("User added", HttpStatus.OK);
 	}
 	
+//	@PostMapping("/users/login")
+//	public ResponseEntity<User> loginUser(@RequestBody User user) throws UserNotFoundException {
+//		User existingUser = userServices.authUser(user);
+//		return new ResponseEntity<User>("hi", HttpStatus.OK);
+//	}
+	
 	@GetMapping("/users/{userid}")
 	public ResponseEntity<User> searchUser(@PathVariable int userid) throws UserNotFoundException{
 		User user = userServices.getUser(userid);

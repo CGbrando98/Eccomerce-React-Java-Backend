@@ -25,7 +25,7 @@ public class CartServicesImpl implements CartServices{
 	@Override
 	public void saveCart(Cart cart) {
 		try {
-			Optional<Product> optionalProduct = productDao.findById(56);
+			Optional<Product> optionalProduct = productDao.findById(5);
 			Supplier<ProductNotFoundException> exceptionSupplier = () -> new 
 					ProductNotFoundException("Product not found for id");
 			

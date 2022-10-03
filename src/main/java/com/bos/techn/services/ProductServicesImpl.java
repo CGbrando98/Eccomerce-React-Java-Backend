@@ -27,7 +27,7 @@ public class ProductServicesImpl implements ProductServices{
 	@Override
 	public void saveProduct(Product product) {
 		try {
-			Optional<User> optional = userDao.findById(54);
+			Optional<User> optional = userDao.findById(1);
 			Supplier<UserNotFoundException> exceptionSupplier = () -> new 
 					UserNotFoundException("User not found for id");
 
@@ -49,7 +49,7 @@ public class ProductServicesImpl implements ProductServices{
 	@Override
 	public void updateProduct(Product newProduct, int id) throws ProductNotFoundException {
 		try {
-			Optional<User> optional = userDao.findById(54);
+			Optional<User> optional = userDao.findById(1);
 			Supplier<UserNotFoundException> exceptionSupplier = () -> new 
 					UserNotFoundException("User not found for id");
 
@@ -81,7 +81,7 @@ public class ProductServicesImpl implements ProductServices{
 	@Override
 	public void saveBulkProducts(List<Product> products) {
 		try {
-			Optional<User> optional = userDao.findById(54);
+			Optional<User> optional = userDao.findById(1);
 			Supplier<UserNotFoundException> exceptionSupplier = () -> new 
 					UserNotFoundException("User not found for id");
 			products.forEach(p -> {

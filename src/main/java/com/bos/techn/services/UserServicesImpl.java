@@ -1,33 +1,36 @@
 package com.bos.techn.services;
 
-import java.security.*;
+import java.security.*; 
 import java.util.*; 
 import java.util.function.*;
 
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
+import org.springframework.security.core.*;
+import org.springframework.security.core.authority.*;
+import org.springframework.security.core.userdetails.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.*;
 
 import com.bos.techn.beans.*;
+import com.bos.techn.beans.User;
 import com.bos.techn.daos.*;
 import com.bos.techn.exceptions.*;
 
 @Component
-public class UserServicesImpl implements UserServices {
+public class UserServicesImpl implements UserServices, UserDetailsService {
 	
 	@Autowired
 	private UserDAO userDao;
 	
-	@Override
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	
 	public void saveUser(User user) {
 		try {
 			// use spring security for hashing
-			BCryptPasswordEncoder bCryptPasswordEncoder =  new 
-					BCryptPasswordEncoder(10, new SecureRandom());
-			String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
-			
-			user.setPassword(encodedPassword);
-			user.setAdmin(false);
+			user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+			user.setRole("ADMIN");
 			userDao.save(user);
 		} catch (Exception e) {
 			System.out.println(e);
@@ -35,7 +38,7 @@ public class UserServicesImpl implements UserServices {
 		}
 	}
 
-	@Override
+
 	public User getUser(int id) throws UserNotFoundException {
 		Optional<User> optional = userDao.findById(id);
 		// lambda function 
@@ -44,7 +47,6 @@ public class UserServicesImpl implements UserServices {
 		return optional.orElseThrow(exceptionSupplier);
 	}
 
-	@Override
 	public void deleteUser(int id) throws UserNotFoundException {
 		try {
 			userDao.deleteById(id);
@@ -55,4 +57,21 @@ public class UserServicesImpl implements UserServices {
 					+ "id: "+ id);
 		}
 	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User user = userDao.findByUsername(username);
+		if (user == null) {
+			throw new UsernameNotFoundException("User not found");
+		} else {
+			List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+			authorities.add(new SimpleGrantedAuthority(user.getRole()));
+			
+		return new org.springframework.security.core.userdetails.User(user.getUsername(), 
+				user.getPassword(), authorities);
+		
+		}
+			
+	}
+
 }
