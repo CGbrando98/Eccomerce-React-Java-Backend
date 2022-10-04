@@ -34,8 +34,8 @@ public class User implements UserDetails{
 	@Column(unique=true)
 	private String email;
 	private String password;
-//	@Enumerated(EnumType.STRING)
-	private String role;
+	@Enumerated(EnumType.STRING)
+	private Role role;
 	
 	@CreatedDate
 	private Instant userCreatedDate;
@@ -51,9 +51,9 @@ public class User implements UserDetails{
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-	    authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-	    authorities.add(new SimpleGrantedAuthority("ADMIN"));
-	    authorities.add(new SimpleGrantedAuthority("USER"));
+		// give the authority/role to the role on the accessing user based on the db role
+		// if we replace role.name() with Role.ROLE_ADMIN all users are admin
+	    authorities.add(new SimpleGrantedAuthority(role.name()));
 		return authorities;
 	}
 	

@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.*;
 
+import com.bos.techn.*;
 import com.bos.techn.beans.*;
 import com.bos.techn.beans.User;
 import com.bos.techn.daos.*;
@@ -30,7 +31,7 @@ public class UserServicesImpl implements UserServices, UserDetailsService {
 		try {
 			// use spring security for hashing
 			user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-			user.setRole("ADMIN");
+			user.setRole(Role.ROLE_ADMIN);
 			userDao.save(user);
 		} catch (Exception e) {
 			System.out.println(e);
@@ -63,15 +64,16 @@ public class UserServicesImpl implements UserServices, UserDetailsService {
 		User user = userDao.findByUsername(username);
 		if (user == null) {
 			throw new UsernameNotFoundException("User not found");
-		} else {
-			List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-			authorities.add(new SimpleGrantedAuthority(user.getRole()));
+		} 
+//		else {
+//			List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+//			authorities.add(new SimpleGrantedAuthority(user.getRole().name()));
 			
-		return new org.springframework.security.core.userdetails.User(user.getUsername(), 
-				user.getPassword(), authorities);
-		
-		}
-			
+//		return new org.springframework.security.core.userdetails.User(user.getUsername(), 
+//				user.getPassword(), authorities);
+//		
+//		}
+		return user;	
 	}
 
 }
