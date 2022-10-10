@@ -10,7 +10,6 @@ import com.bos.techn.exceptions.*;
 import com.bos.techn.services.*;
 
 @RestController
-@CrossOrigin(origins="http://localhost:3000")
 public class ProductController {
 	
 	// magical instantiation

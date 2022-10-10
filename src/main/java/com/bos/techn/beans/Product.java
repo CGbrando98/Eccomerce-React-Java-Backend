@@ -29,7 +29,7 @@ public class Product {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id_product;
-	private String productname;
+	private String name;
 	private String image;
 	private String description;
 	private String brand;
@@ -41,9 +41,9 @@ public class Product {
 	// number of reviews
 	private int reviews;
 	@CreatedDate
-	private Instant productCreatedDate;
+	private Date productCreatedDate;
 	@LastModifiedDate
-	private Instant productLastModifiedDate;
+	private Date productLastModifiedDate;
 	
 	@ManyToOne(fetch = FetchType.LAZY,optional = false)
 	// here name is the one mapping
@@ -59,10 +59,10 @@ public class Product {
 	private List<Review> productReviews;
 
 	public Product(String productname, String image, String description, String brand, String category, double price,
-			int stock, double avgrating, int reviews, Instant productCreatedDate, Instant productLastModifiedDate,
+			int stock, double avgrating, int reviews, Date productCreatedDate, Date productLastModifiedDate,
 			User productUser, List<Review> productReviews) {
 		super();
-		this.productname = productname;
+		this.name = name;
 		this.image = image;
 		this.description = description;
 		this.brand = brand;

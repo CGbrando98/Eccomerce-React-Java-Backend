@@ -6,6 +6,7 @@ import java.util.function.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
 
+import com.bos.techn.*;
 import com.bos.techn.beans.*;
 import com.bos.techn.daos.*;
 import com.bos.techn.exceptions.*;
@@ -25,7 +26,7 @@ public class ReviewServicesImpl implements ReviewServices{
 	@Override
 	public void saveReview(Review review, int productid) {
 		try {
-			Optional<User> optionalUser = userDao.findById(1);
+			Optional<User> optionalUser = userDao.findById(TechnApplication.userIDValue);
 			Supplier<UserNotFoundException> exceptionSupplierUser = () -> new 
 					UserNotFoundException("User not found for id");
 

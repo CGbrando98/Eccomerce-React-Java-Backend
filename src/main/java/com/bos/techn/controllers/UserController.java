@@ -25,7 +25,6 @@ import com.fasterxml.jackson.core.exc.*;
 import com.fasterxml.jackson.databind.*;
 
 @RestController
-@CrossOrigin(origins="http://localhost:3000")
 public class UserController {
 	
 	@Autowired
@@ -34,8 +33,10 @@ public class UserController {
 //	@Autowired
 //	private JWTUtil jwtTokenUtil;
 
+	// We don't need to return a user on save, since we will redirect 
+	//to login page. On login, user obj is returned
 	@PostMapping("/users")
-	public ResponseEntity<String> addUser(@RequestBody User user) {
+	public ResponseEntity<String> addUser(@RequestBody User user) throws SavingDataException {
 		userServices.saveUser(user);
 		return new ResponseEntity("Saved", HttpStatus.OK);
 	}
@@ -44,6 +45,13 @@ public class UserController {
 	public ResponseEntity<User> searchUser(@PathVariable int userid) throws UserNotFoundException{
 		User user = userServices.getUser(userid);
 		return new ResponseEntity<User>(user, HttpStatus.OK);
+	}
+	
+	@PutMapping("/users/{userid}")
+	public ResponseEntity<User> changeUser(@RequestBody User user, @PathVariable int userid) 
+			throws UserNotFoundException{
+		User userUpdated = userServices.updateUser(user, userid);
+		return new ResponseEntity<>(userUpdated, HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/users/{userid}")
@@ -67,8 +75,8 @@ public class UserController {
 			System.out.println(user);
 			
 			String access_token = JWT.create()
-					.withSubject(user.getUsername())
-					.withExpiresAt(new Date(System.currentTimeMillis()+ 1*60*1000))
+					.withSubject(String.valueOf(((User) user).getId_user()))
+					.withExpiresAt(new Date(System.currentTimeMillis()+ 10*60*1000))
 					.withIssuer("auth0")
 					.sign(algorithm);
 			

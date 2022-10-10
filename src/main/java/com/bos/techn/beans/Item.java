@@ -19,9 +19,14 @@ public class Item {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id_item;
-	private String orderproductname;
+	
+	private String name;
 	private int qty;
-	private String orderproductimage;
+	private String image;
+	
+	// prod id from react
+	@Transient
+	private int product;
 	
 	@OneToOne
 	@JoinColumn(name="id_product")

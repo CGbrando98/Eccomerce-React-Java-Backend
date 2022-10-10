@@ -21,6 +21,7 @@ import com.auth0.jwt.*;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.*;
 import com.auth0.jwt.interfaces.*;
+import com.bos.techn.daos.*;
 import com.bos.techn.services.*;
 import com.fasterxml.jackson.databind.*;
 
@@ -33,11 +34,12 @@ public class CustomAuthorFilter extends OncePerRequestFilter{
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		
+		// for cors
+//		response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
 		// if the user is just logging in we don't need to do any authorization 
 		if(request.getServletPath().equals("/login") || request.getServletPath().equals("/users/token/refresh")) {
 			filterChain.doFilter(request, response);
-			System.out.print("login route");
+			System.out.println("login authorization");
 		} else {
 			String authorizationHeader = request.getHeader("Authorization");
 			if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
@@ -46,7 +48,8 @@ public class CustomAuthorFilter extends OncePerRequestFilter{
 				Algorithm algorithm = Algorithm.HMAC256("secret");
 				JWTVerifier verifier = JWT.require(algorithm).withIssuer("auth0").build();
 				DecodedJWT decodedJWT = verifier.verify(token);
-				String username = decodedJWT.getSubject();
+				int id = Integer.valueOf(decodedJWT.getSubject());
+				String username = userServices.getUser(id).getUsername();
 				
 				UserDetails userDetails = userServices.loadUserByUsername(username);
 				UsernamePasswordAuthenticationToken authToken = new 

@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.*;
 
 import com.bos.techn.beans.*;
 
-public interface CartDAO extends JpaRepository<Cart, Integer>{
+public interface OrderDAO extends JpaRepository<Order, Integer>{
 	
 }
 

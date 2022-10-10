@@ -27,15 +27,14 @@ public class UserServicesImpl implements UserServices, UserDetailsService {
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	
-	public void saveUser(User user) {
+	public void saveUser(User user) throws SavingDataException {
 		try {
 			// use spring security for hashing
 			user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 			user.setRole(Role.ROLE_ADMIN);
 			userDao.save(user);
 		} catch (Exception e) {
-			System.out.println(e);
-			System.err.println("Error in saving");
+			throw new SavingDataException("Error in Saving User Data");
 		}
 	}
 
@@ -47,6 +46,36 @@ public class UserServicesImpl implements UserServices, UserDetailsService {
 				UserNotFoundException("User not found for id: "+id);
 		return optional.orElseThrow(exceptionSupplier);
 	}
+	
+	@Override
+	public User updateUser(User newUser, int id) throws UserNotFoundException {
+		try {
+			Optional<User> optional = userDao.findById(id);
+			Supplier<UserNotFoundException> exceptionSupplier = () -> new 
+					UserNotFoundException("User not found for id");
+			newUser.setRole(optional.get().getRole());
+			newUser.setId_user(id);
+			
+			if (newUser.getEmail() == "") {
+				newUser.setEmail(optional.get().getEmail());
+			}
+			
+			if (newUser.getUsername() == "") {
+				newUser.setUsername(optional.get().getUsername());
+			}
+			
+			if (newUser.getPassword() == "") {
+				newUser.setPassword(optional.get().getPassword());
+			} else {
+				newUser.setPassword(bCryptPasswordEncoder.encode(newUser.getPassword()));
+			}
+			
+			return userDao.save(newUser);
+			} catch (Exception e) {
+				throw new UserNotFoundException("Could not find User to update with "
+						+ "id: "+ id);
+			}
+		}
 
 	public void deleteUser(int id) throws UserNotFoundException {
 		try {

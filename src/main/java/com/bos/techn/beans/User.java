@@ -37,10 +37,10 @@ public class User implements UserDetails{
 	@Enumerated(EnumType.STRING)
 	private Role role;
 	
-	@CreatedDate
-	private Instant userCreatedDate;
+	@CreatedDate @Column(updatable = false)
+	private Date userCreatedDate;
 	@LastModifiedDate
-	private Instant userLastModifiedDate;
+	private Date userLastModifiedDate;
 	
 	public User(String username, String email, String password) {
 		super();

@@ -4,8 +4,9 @@ import java.util.*;
 import java.util.function.*;
 
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.stereotype.*; 
+import org.springframework.stereotype.*;
 
+import com.bos.techn.*;
 import com.bos.techn.beans.*;
 import com.bos.techn.daos.*;
 import com.bos.techn.exceptions.*;
@@ -27,7 +28,7 @@ public class ProductServicesImpl implements ProductServices{
 	@Override
 	public void saveProduct(Product product) {
 		try {
-			Optional<User> optional = userDao.findById(1);
+			Optional<User> optional = userDao.findById(TechnApplication.userIDValue);
 			Supplier<UserNotFoundException> exceptionSupplier = () -> new 
 					UserNotFoundException("User not found for id");
 
@@ -49,7 +50,7 @@ public class ProductServicesImpl implements ProductServices{
 	@Override
 	public void updateProduct(Product newProduct, int id) throws ProductNotFoundException {
 		try {
-			Optional<User> optional = userDao.findById(1);
+			Optional<User> optional = userDao.findById(TechnApplication.userIDValue);
 			Supplier<UserNotFoundException> exceptionSupplier = () -> new 
 					UserNotFoundException("User not found for id");
 
@@ -81,7 +82,7 @@ public class ProductServicesImpl implements ProductServices{
 	@Override
 	public void saveBulkProducts(List<Product> products) {
 		try {
-			Optional<User> optional = userDao.findById(1);
+			Optional<User> optional = userDao.findById(TechnApplication.userIDValue);
 			Supplier<UserNotFoundException> exceptionSupplier = () -> new 
 					UserNotFoundException("User not found for id");
 			products.forEach(p -> {

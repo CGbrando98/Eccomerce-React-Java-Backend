@@ -13,10 +13,12 @@ import org.springframework.security.authentication.*;
 import org.springframework.security.core.*;
 import org.springframework.security.web.authentication.*;
 import org.springframework.stereotype.*;
+import org.springframework.web.servlet.view.*;
 
 import com.auth0.jwt.*;
 import com.auth0.jwt.algorithms.*;
 import com.bos.techn.beans.*;
+import com.bos.techn.exceptions.*;
 import com.fasterxml.jackson.databind.*;
 
 
@@ -32,12 +34,13 @@ public class CustomAuthenFilter extends UsernamePasswordAuthenticationFilter{
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException {
-		
+		System.out.println("login authentication");
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password);
 		System.out.println("attempt login");
 		return authManager.authenticate(authToken);
+		
 	}
 
 	@Override
@@ -49,22 +52,29 @@ public class CustomAuthenFilter extends UsernamePasswordAuthenticationFilter{
 		// place secret in safe place for prod
 		Algorithm algorithm = Algorithm.HMAC256("secret");
 		String access_token = JWT.create()
-				.withSubject(user.getUsername())
-				.withExpiresAt(new Date(System.currentTimeMillis()+ 1*60*1000))
+				.withSubject(String.valueOf(user.getId_user()))
+				.withExpiresAt(new Date(System.currentTimeMillis()+ 10*60*1000))
 				.withIssuer("auth0")
 				.sign(algorithm);
 		String refresh_token = JWT.create()
-				.withSubject(user.getUsername())
+				.withSubject(String.valueOf(user.getId_user()))
 				.withExpiresAt(new Date(System.currentTimeMillis()+60*60*1000*24))
 				.withIssuer("auth0")
 				.sign(algorithm);
 		
-		Map<String, String> tokens = new HashMap<>();
-		tokens.put("access_token", access_token);
-		tokens.put("refresh_token", refresh_token);
-		response.setContentType("application/json");
-		new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+		Map<String, Object> userInfo = new HashMap<>();
+		userInfo.put("access_token", access_token);
+		userInfo.put("refresh_token", refresh_token);
+	
+		// don't return a password
+		user.setPassword(null);
+		userInfo.put("userInfo", user);
 		
+		
+		response.setContentType("application/json");
+//		response.sendRedirect("http://localhost:3000");
+		new ObjectMapper().writeValue(response.getOutputStream(), userInfo);
+		System.out.println(userInfo);
 	}
 
 }

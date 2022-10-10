@@ -1,6 +1,7 @@
 package com.bos.techn.beans;
 
-import java.time.*; 
+import java.time.*;
+import java.util.*;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -32,9 +33,9 @@ public class Review {
 	private String comment;
 	
 	@CreatedDate
-	private Instant reviewCreatedDate;
+	private Date reviewCreatedDate;
 	@LastModifiedDate
-	private Instant reviewLastModifiedDate;
+	private Date reviewLastModifiedDate;
 	
 	@ManyToOne(fetch = FetchType.LAZY,optional = false)
 	@JoinColumn(name="id_user")
