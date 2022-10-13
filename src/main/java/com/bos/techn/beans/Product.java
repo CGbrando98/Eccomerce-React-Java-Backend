@@ -8,6 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.*;
 import org.springframework.data.annotation.*;
@@ -57,6 +58,9 @@ public class Product {
 	// add product_id to reviews table
 	@JoinColumn(name="id_product")
 	private List<Review> productReviews;
+	
+	@Transient
+	private int userid;
 
 	public Product(String productname, String image, String description, String brand, String category, double price,
 			int stock, double avgrating, int reviews, Date productCreatedDate, Date productLastModifiedDate,

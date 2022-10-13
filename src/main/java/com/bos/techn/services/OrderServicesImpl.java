@@ -1,5 +1,6 @@
 package com.bos.techn.services;
 
+import java.time.*;
 import java.util.*;
 import java.util.function.*;
 
@@ -66,6 +67,30 @@ public class OrderServicesImpl implements OrderServices{
 				OrderNotFoundException("Order not found for id: "+id);
 		return optional.orElseThrow(exceptionSupplier);
 	}
+	
+	@Override
+	public Order payOrder(int id, PaymentResult payment ) throws OrderNotFoundException {
+		try {
+			Optional<Order> optional = orderDao.findById(id);
+			Supplier<OrderNotFoundException> exceptionSupplier = () -> new 
+					OrderNotFoundException("Order not found for id: "+id);
+
+			optional.get().setPayment(payment);
+			optional.get().setIspaid(true);
+			optional.get().setPaidat(LocalDateTime.now());
+			
+			return orderDao.save(optional.get());
+			} catch (Exception e) {
+				throw new OrderNotFoundException("Could not find Order to update with "
+						+ "id: "+ id);
+			}
+		}
+	
+	@Override
+	public List<Order> getOrdersByUserId(int userid) {
+		System.out.println("profile orders");
+		return orderDao.findAllByUserId(userid);
+	}
 
 	@Override
 	public void deleteOrder(int id) throws OrderNotFoundException {
@@ -78,4 +103,5 @@ public class OrderServicesImpl implements OrderServices{
 					+ "id: "+ id);
 		}
 	}
+
 }

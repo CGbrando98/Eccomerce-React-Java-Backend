@@ -3,8 +3,14 @@ package com.bos.techn.beans;
 import java.time.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
+import org.hibernate.annotations.*;
 import org.springframework.data.jpa.domain.support.*;
+
+import com.fasterxml.jackson.annotation.*;
 
 import lombok.*;
 
@@ -23,4 +29,10 @@ public class ShippingAddress {
 	private String city;
 	private String postal;
 	private String country;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@JoinColumn(name = "id_order")
+	@JsonBackReference
+	private Order shippingOrder;
 }

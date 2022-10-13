@@ -17,9 +17,9 @@ public class ProductController {
 	private ProductServices productServices;
 	
 	@PostMapping("/products")
-	public ResponseEntity<String> addProduct(@RequestBody Product product) {
-		productServices.saveProduct(product);
-		return new ResponseEntity<>("Product details added", HttpStatus.OK);
+	public ResponseEntity<Product> addProduct(@RequestBody Product product) throws SavingDataException {
+		Product savedProduct = productServices.saveProduct(product);
+		return new ResponseEntity<>(savedProduct, HttpStatus.OK);
 	}
 	
 	@GetMapping("/products/{productid}")

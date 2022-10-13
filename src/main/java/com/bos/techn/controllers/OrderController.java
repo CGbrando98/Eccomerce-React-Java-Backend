@@ -1,5 +1,7 @@
 package com.bos.techn.controllers;
 
+import java.util.*;
+
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +22,22 @@ public class OrderController {
 		return new ResponseEntity<>(savedOrder, HttpStatus.OK);
 	}
 	
+	@GetMapping("/orders/profile/{userid}")
+	public ResponseEntity<List<Order>> searchOrdersByUser(@PathVariable int userid) {
+		System.out.println("profile orders");
+		List<Order> orders = orderServices.getOrdersByUserId(userid);
+		return new ResponseEntity<List<Order>>(orders, HttpStatus.OK);
+	}
+	
 	@GetMapping("/orders/{orderid}")
 	public ResponseEntity<Order> searchOrder(@PathVariable int orderid) throws OrderNotFoundException{
 		Order order = orderServices.getOrder(orderid);
+		return new ResponseEntity<Order>(order, HttpStatus.OK);
+	}
+	
+	@PutMapping("/orders/{orderid}/pay")
+	public ResponseEntity<Order> payOrder(@PathVariable int orderid,@RequestBody PaymentResult payment) throws OrderNotFoundException{
+		Order order = orderServices.payOrder(orderid, payment);
 		return new ResponseEntity<Order>(order, HttpStatus.OK);
 	}
 	

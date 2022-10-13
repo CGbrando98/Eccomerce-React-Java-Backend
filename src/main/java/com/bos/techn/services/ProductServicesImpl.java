@@ -26,16 +26,16 @@ public class ProductServicesImpl implements ProductServices{
 	private UserDAO userDao;
 	
 	@Override
-	public void saveProduct(Product product) {
+	public Product saveProduct(Product product) throws SavingDataException {
 		try {
-			Optional<User> optional = userDao.findById(TechnApplication.userIDValue);
+			Optional<User> optional = userDao.findById(product.getUserid());
 			Supplier<UserNotFoundException> exceptionSupplier = () -> new 
 					UserNotFoundException("User not found for id");
 
 			product.setProductUser(optional.orElseThrow(exceptionSupplier));
-			productDao.save(product);
+			return productDao.save(product);
 		} catch (Exception e) {
-			System.err.println("Error in saving");
+			throw new SavingDataException("Error in saving product data");
 		}
 	}
 	
@@ -50,7 +50,7 @@ public class ProductServicesImpl implements ProductServices{
 	@Override
 	public void updateProduct(Product newProduct, int id) throws ProductNotFoundException {
 		try {
-			Optional<User> optional = userDao.findById(TechnApplication.userIDValue);
+			Optional<User> optional = userDao.findById(newProduct.getUserid());
 			Supplier<UserNotFoundException> exceptionSupplier = () -> new 
 					UserNotFoundException("User not found for id");
 

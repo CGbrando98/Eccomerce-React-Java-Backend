@@ -41,6 +41,12 @@ public class UserController {
 		return new ResponseEntity("Saved", HttpStatus.OK);
 	}
 	
+	@GetMapping("/users")
+	public ResponseEntity<List<User>> searchUsers() {
+		List<User> users = userServices.getUsers();
+		return new ResponseEntity<List<User>>(users, HttpStatus.OK);
+	}
+	
 	@GetMapping("/users/{userid}")
 	public ResponseEntity<User> searchUser(@PathVariable int userid) throws UserNotFoundException{
 		User user = userServices.getUser(userid);

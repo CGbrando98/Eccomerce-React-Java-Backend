@@ -7,7 +7,7 @@ import com.bos.techn.exceptions.*;
 import com.cg.onlineshop.exceptions.*;
 
 public interface ProductServices {
-	void saveProduct(Product product);
+	Product saveProduct(Product product) throws SavingDataException;
 	Product getProduct(int id) throws ProductNotFoundException;
 	void deleteProduct(int id) throws ProductNotFoundException;
 	void updateProduct(Product product, int id) throws ProductNotFoundException;

@@ -53,7 +53,7 @@ public class CustomAuthenFilter extends UsernamePasswordAuthenticationFilter{
 		Algorithm algorithm = Algorithm.HMAC256("secret");
 		String access_token = JWT.create()
 				.withSubject(String.valueOf(user.getId_user()))
-				.withExpiresAt(new Date(System.currentTimeMillis()+ 10*60*1000))
+				.withExpiresAt(new Date(System.currentTimeMillis()+ 60*60*1000))
 				.withIssuer("auth0")
 				.sign(algorithm);
 		String refresh_token = JWT.create()

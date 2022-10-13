@@ -22,4 +22,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "Incorrect Username or Password!");
        return new ResponseEntity<ApiError>(apiError, apiError.getStatus());
    }
+   
+   @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+   public ResponseEntity<ApiError> AccessDeniedException(
+		   org.springframework.security.access.AccessDeniedException ex) {
+       ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "UnAuthorized for this Request");
+       return new ResponseEntity<ApiError>(apiError, apiError.getStatus());
+   }
 }

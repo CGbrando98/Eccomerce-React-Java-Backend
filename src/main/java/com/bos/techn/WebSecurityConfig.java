@@ -56,9 +56,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
       http.csrf().disable();
       http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
       http.authorizeRequests()
-//      .antMatchers("/users").permitAll() 
       .antMatchers(HttpMethod.POST, "/users").permitAll() 
+      .antMatchers(HttpMethod.DELETE, "/users/*").hasRole("ADMIN")
+      .antMatchers(HttpMethod.DELETE, "/products/*").hasRole("ADMIN")
+      .antMatchers(HttpMethod.PUT, "/products/*").hasRole("ADMIN")
       .antMatchers("/products/**", "/login", "/users/token/refresh", "/config/paypal").permitAll()
+      .antMatchers("/users").hasRole("ADMIN")
       .antMatchers("/carts/**", "/users/*").hasAnyRole("ADMIN", "USER")
       .anyRequest()
       .authenticated()

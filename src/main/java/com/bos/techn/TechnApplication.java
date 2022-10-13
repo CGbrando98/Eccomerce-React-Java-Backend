@@ -20,6 +20,5 @@ public class TechnApplication {
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder(10);
     }
-    
-    public static int userIDValue = 1; 
+  
 }

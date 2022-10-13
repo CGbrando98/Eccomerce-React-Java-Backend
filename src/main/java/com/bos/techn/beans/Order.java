@@ -4,11 +4,17 @@ import java.time.*;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.*;
 import org.springframework.data.annotation.*;
 import org.springframework.data.jpa.domain.support.*;
+
+import com.fasterxml.jackson.annotation.*;
 
 import lombok.*;
 
@@ -26,20 +32,26 @@ public class Order {
 	private int id_order;
 	
 	@OneToMany(cascade = CascadeType.ALL)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name="id_order")
 	private List<Item> items;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="id_shipping")
+	@OneToOne(cascade=CascadeType.ALL,mappedBy = "shippingOrder" )
+	// sets the fk with the back reference
+	@JsonManagedReference
 	private ShippingAddress shipping;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="id_user")
-	private User user;
-	
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="id_payment")
+	@OneToOne(cascade = CascadeType.ALL,mappedBy = "paymentOrder" )
+	@JsonManagedReference
 	private PaymentResult payment;
+	
+	@ManyToOne(fetch = FetchType.LAZY,optional = false)
+	// here name is the one mapping
+	@JoinColumn(name="id_user")
+	// deleting a user deletes there products
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	private User user;
 	
 	@Transient
 	private int userid;
