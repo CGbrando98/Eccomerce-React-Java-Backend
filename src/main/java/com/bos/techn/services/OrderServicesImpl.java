@@ -56,6 +56,11 @@ public class OrderServicesImpl implements OrderServices{
 			throw new SavingDataException();
 		}
 	}
+	
+	@Override
+	public List<Order> getOrders() {
+		return orderDao.findAll();
+	}
 
 	@Override
 	public Order getOrder(int id) throws OrderNotFoundException {
@@ -87,6 +92,20 @@ public class OrderServicesImpl implements OrderServices{
 		}
 	
 	@Override
+	public Order deliverOrder(int id) {
+		Optional<Order> optional = orderDao.findById(id);
+		Supplier<OrderNotFoundException> exceptionSupplier = () -> new 
+				OrderNotFoundException("Order not found for id: "+id);
+		
+		System.out.println(optional.get());
+		optional.get().setIsdelivered(true);
+		optional.get().setDeliveredat(LocalDateTime.now());
+		
+		return orderDao.save(optional.get());
+	}
+
+	
+	@Override
 	public List<Order> getOrdersByUserId(int userid) {
 		System.out.println("profile orders");
 		return orderDao.findAllByUserId(userid);
@@ -103,5 +122,7 @@ public class OrderServicesImpl implements OrderServices{
 					+ "id: "+ id);
 		}
 	}
+
+
 
 }

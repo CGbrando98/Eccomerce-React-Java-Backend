@@ -15,14 +15,13 @@ public class ReviewController {
 	private ReviewServices reviewServices;
 
 	@PostMapping("/products/{productid}/reviews")
-	public ResponseEntity<String> addReview(@RequestBody Review review, @PathVariable int productid) {
-		reviewServices.saveReview(review, productid);
-		return new ResponseEntity<>("review added", HttpStatus.OK);
+	public ResponseEntity<Review> addReview(@RequestBody Review review, @PathVariable int productid) throws SavingDataException{
+		Review savedReview = reviewServices.saveReview(review, productid);
+		return new ResponseEntity<>(savedReview, HttpStatus.OK);
 	}
 	
 	@GetMapping("/products/{productid}/reviews/{reviewid}")
 	public ResponseEntity<Review> searchReview(@PathVariable int reviewid) throws ReviewNotFoundException{
-		System.out.println(reviewid);
 		Review review = reviewServices.getReview(reviewid);
 		return new ResponseEntity<Review>(review, HttpStatus.OK);
 	}

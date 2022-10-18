@@ -4,9 +4,11 @@ import java.time.*;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.*;
 import org.springframework.data.annotation.*;
@@ -22,6 +24,7 @@ import lombok.*;
 @Getter
 @Setter 
 @NoArgsConstructor
+@ToString
 public class Review {
 	
 	//there is a problem with getting reviews
@@ -29,6 +32,7 @@ public class Review {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id_review;
+	
 	private double rating;
 	private String comment;
 	
@@ -37,11 +41,13 @@ public class Review {
 	@LastModifiedDate
 	private Date reviewLastModifiedDate;
 	
-	@ManyToOne(fetch = FetchType.LAZY,optional = false)
-	@JoinColumn(name="id_user")
-	@OnDelete(action = OnDeleteAction.CASCADE)
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_user")
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	private User reviewUser;
+	
+	@Transient
+	private int userid;
 	
 	public Review(double rating, String comment, User reviewUser, Product reviewProduct) {
 		super();

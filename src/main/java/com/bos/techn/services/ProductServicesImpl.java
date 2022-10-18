@@ -25,6 +25,8 @@ public class ProductServicesImpl implements ProductServices{
 	@Autowired
 	private UserDAO userDao;
 	
+	int pageSize = 4;
+	
 	@Override
 	public Product saveProduct(Product product) throws SavingDataException {
 		try {
@@ -53,6 +55,12 @@ public class ProductServicesImpl implements ProductServices{
 			Optional<User> optional = userDao.findById(newProduct.getUserid());
 			Supplier<UserNotFoundException> exceptionSupplier = () -> new 
 					UserNotFoundException("User not found for id");
+			
+			System.out.println(newProduct);
+			if (newProduct.getProductReviews() == null) {
+				newProduct.setProductReviews(Collections.<Review> emptyList());
+			}
+
 
 			newProduct.setProductUser(optional.orElseThrow(exceptionSupplier));
 			newProduct.setId_product(id);
@@ -62,6 +70,11 @@ public class ProductServicesImpl implements ProductServices{
 						+ "id: "+ id);
 			}
 		}
+	
+	@Override
+	public List<Product> getProductsByRating() {
+		return productDao.findTop3ByOrderByAvgratingAsc();
+	}
 
 	@Override
 	public void deleteProduct(int id) throws ProductNotFoundException {
@@ -73,16 +86,45 @@ public class ProductServicesImpl implements ProductServices{
 					+ "id: "+ id);
 		}
 	}
+	
+	@Override
+	public Map<String, Object> getProductsByName(int page,String keyword) {
+		int numRecords = (int) productDao.findByNameLike("%"+keyword+"%").size();
+		 Map<String, Object> productsAndPages = new HashMap<>();
+		
+		 if (numRecords<pageSize*page) {
+			 productsAndPages.put("products", productDao.findByNameLike("%"+keyword+"%").subList(pageSize*(page-1), numRecords));
+		 } else {
+			 productsAndPages.put("products", productDao.findByNameLike("%"+keyword+"%").subList(pageSize*(page-1), pageSize*page));
+		 }
+		 
+		 productsAndPages.put("pages",Math.ceil((double) (productDao.findByNameLike("%"+keyword+"%").size())/((double) pageSize)));
+		 productsAndPages.put("page", page);
+		 System.out.println(productsAndPages.get("pages"));
+		 return productsAndPages;
+	}
+	
 
 	@Override
-	public List<Product> getProducts() {
-		return productDao.findAll();
+	public Map<String, Object> getProducts(int page) {
+		 int numRecords = (int) productDao.count();
+		 Map<String, Object> productsAndPages = new HashMap<>();
+		 
+		 if (numRecords<pageSize*page) {
+			 productsAndPages.put("products", productDao.findAll().subList(pageSize*(page-1), numRecords));
+		 } else {
+			 productsAndPages.put("products", productDao.findAll().subList(pageSize*(page-1), pageSize*page));
+		 }
+		 
+		 productsAndPages.put("pages", Math.ceil((double)productDao.count()/(double) pageSize));
+		 productsAndPages.put("page", page);
+		return productsAndPages;
 	}
 
 	@Override
 	public void saveBulkProducts(List<Product> products) {
 		try {
-			Optional<User> optional = userDao.findById(TechnApplication.userIDValue);
+			Optional<User> optional = userDao.findById(1);
 			Supplier<UserNotFoundException> exceptionSupplier = () -> new 
 					UserNotFoundException("User not found for id");
 			products.forEach(p -> {
@@ -97,5 +139,5 @@ public class ProductServicesImpl implements ProductServices{
 		System.err.println("Error in saving");
 		}
 	}
-	
+
 }

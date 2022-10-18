@@ -2,6 +2,7 @@ package com.bos.techn.services;
 
 import java.util.*; 
 import java.util.function.*;
+import java.util.stream.*;
 
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
@@ -24,24 +25,34 @@ public class ReviewServicesImpl implements ReviewServices{
 	private UserDAO userDao;
 	
 	@Override
-	public void saveReview(Review review, int productid) {
+	public Review saveReview(Review review, int productid) throws SavingDataException {
 		try {
-			Optional<User> optionalUser = userDao.findById(TechnApplication.userIDValue);
+			
+			Optional<Product> optionalProduct = productDao.findById(productid);
+			Supplier<ProductNotFoundException> exceptionSupplierProduct = () -> new 
+					ProductNotFoundException("Product not found");
+
+			List<Review> reviews = optionalProduct.get().getProductReviews().stream().filter(r->
+				r.getReviewUser().getId_user()==review.getUserid()).collect(Collectors.toList());
+
+			if (reviews.isEmpty()) {
+			
+			Optional<User> optionalUser = userDao.findById(review.getUserid());
 			Supplier<UserNotFoundException> exceptionSupplierUser = () -> new 
 					UserNotFoundException("User not found for id");
 
 			review.setReviewUser(optionalUser.orElseThrow(exceptionSupplierUser));
 			
-			productDao.findById(productid).map(product -> {
-				product.getProductReviews().add(review);
-				return reviewDao.save(review);
-						}).orElseThrow(
-						() -> new ProductNotFoundException("Product Not found with id"));
+			updateAvgRatingAndReviews(review,optionalProduct);
+			return reviewDao.save(review);}
+			
+			else {System.out.println("Review exists for user");}
+				throw new SavingDataException();
 
 		} catch (Exception e) {
-			System.out.println(e);
-			System.err.println("Error in saving");
+			throw new SavingDataException();
 		}
+
 	}
 
 	@Override
@@ -62,5 +73,28 @@ public class ReviewServicesImpl implements ReviewServices{
 			throw new ReviewNotFoundException("Could not find Review to delete with "
 					+ "id: "+ id);
 		}
+	}
+	
+	public void updateAvgRatingAndReviews(Review review,Optional<Product> optionalProduct) {
+		double avg=0;
+		double sum = 0;
+		int numReviews = optionalProduct.get().getProductReviews().size();
+		
+		for (int i=0;i<optionalProduct.get().getProductReviews().size();i++) {
+			sum = sum + optionalProduct.get().getProductReviews().get(i).getRating();
+		}
+		
+		if (sum==0) {
+			avg=review.getRating();
+		} else {
+			// dont forget about incomming review
+			avg=(sum+review.getRating())/(numReviews+1);
+
+		}
+		
+		optionalProduct.get().setAvgrating(avg);
+		optionalProduct.get().setReviews(optionalProduct.get().getReviews()+1);
+		optionalProduct.get().getProductReviews().add(review);
+
 	}
 }

@@ -25,6 +25,7 @@ import lombok.*;
 @Getter
 @Setter 
 @NoArgsConstructor
+@ToString
 public class Product {
 	
 	@Id
@@ -78,6 +79,6 @@ public class Product {
 		this.productCreatedDate = productCreatedDate;
 		this.productLastModifiedDate = productLastModifiedDate;
 		this.productUser = productUser;
-		this.productReviews = productReviews;
+//		this.productReviews = productReviews;
 	}
 }

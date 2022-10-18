@@ -22,6 +22,13 @@ public class OrderController {
 		return new ResponseEntity<>(savedOrder, HttpStatus.OK);
 	}
 	
+	@GetMapping("/orders")
+	public ResponseEntity<List<Order>> searchOrders() {
+		List<Order> orders = orderServices.getOrders();
+		return new ResponseEntity<List<Order>>(orders, HttpStatus.OK);
+	}
+	
+	
 	@GetMapping("/orders/profile/{userid}")
 	public ResponseEntity<List<Order>> searchOrdersByUser(@PathVariable int userid) {
 		System.out.println("profile orders");
@@ -38,6 +45,13 @@ public class OrderController {
 	@PutMapping("/orders/{orderid}/pay")
 	public ResponseEntity<Order> payOrder(@PathVariable int orderid,@RequestBody PaymentResult payment) throws OrderNotFoundException{
 		Order order = orderServices.payOrder(orderid, payment);
+		return new ResponseEntity<Order>(order, HttpStatus.OK);
+	}
+	
+	@PutMapping("/orders/{orderid}/deliver")
+	public ResponseEntity<Order> deliverOrder(@PathVariable int orderid) throws OrderNotFoundException{
+		System.out.println("hit");
+		Order order = orderServices.deliverOrder(orderid);
 		return new ResponseEntity<Order>(order, HttpStatus.OK);
 	}
 	

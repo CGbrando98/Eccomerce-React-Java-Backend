@@ -11,6 +11,8 @@ public interface ProductServices {
 	Product getProduct(int id) throws ProductNotFoundException;
 	void deleteProduct(int id) throws ProductNotFoundException;
 	void updateProduct(Product product, int id) throws ProductNotFoundException;
-	List<Product> getProducts();
+	Map<String, Object> getProducts(int page);
 	void saveBulkProducts(List<Product> products);
+	Map<String, Object> getProductsByName(int page, String keyword);
+	List<Product> getProductsByRating();
 }
