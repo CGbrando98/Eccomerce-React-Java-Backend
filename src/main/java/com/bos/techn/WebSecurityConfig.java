@@ -57,7 +57,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
     	auth.userDetailsService(userServices).passwordEncoder(bCryptPasswordEncoder);
     }
-
 	
    @Override
    protected void configure(HttpSecurity http) throws Exception {
