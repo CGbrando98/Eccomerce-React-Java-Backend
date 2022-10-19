@@ -1,6 +1,6 @@
 package com.bos.techn.services;
 
-import java.util.*;
+import java.util.*; 
 import java.util.function.*;
 
 import org.springframework.beans.factory.annotation.*;
@@ -10,9 +10,7 @@ import com.bos.techn.*;
 import com.bos.techn.beans.*;
 import com.bos.techn.daos.*;
 import com.bos.techn.exceptions.*;
-import com.cg.onlineshop.daos.*;
-import com.cg.onlineshop.exceptions.*;
-import com.cg.onlineshop.pojos.*;
+
 
 //identify the class as a spring bean
 @Component
