@@ -6,7 +6,5 @@ import com.bos.techn.beans.*;
 
 public interface ProductDAO extends JpaRepository<Product, Integer>{
 	List<Product> findByNameLike(String keyword);
-
-
 	List<Product> findTop3ByOrderByAvgratingAsc();
 }

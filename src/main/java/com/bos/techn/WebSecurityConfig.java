@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.*;
 import org.springframework.security.web.authentication.*;
 import org.springframework.web.bind.annotation.*;
 
+import com.auth0.jwt.algorithms.*;
 import com.bos.techn.beans.*;
 import com.bos.techn.filters.*;
 import com.bos.techn.services.*;
@@ -27,9 +28,17 @@ import com.bos.techn.services.*;
 @CrossOrigin(origins="http://localhost:3000")
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter { 
 	
+	@Value("${spring.token.secret}")
+	String secret;
+	
 	@Bean
 	public AuthenticationManager authManagerBean() throws Exception {
 		return super.authenticationManagerBean(); 
+	} 
+	
+	@Bean 
+	public Algorithm algorithmBean() throws Exception {
+		return Algorithm.HMAC256(secret); 
 	} 
  
 	@Autowired
@@ -71,7 +80,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
       .loginProcessingUrl("/login");
 
       
-      http.addFilter(new CustomAuthenFilter(authManagerBean()));
+      http.addFilter(new CustomAuthenFilter(authManagerBean(),algorithmBean() ));
       http.addFilterBefore(customAuthorFilter, UsernamePasswordAuthenticationFilter.class);
   }
 }

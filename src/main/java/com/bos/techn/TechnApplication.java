@@ -1,14 +1,20 @@
 package com.bos.techn;
 
+import org.springframework.beans.factory.annotation.*;
+
 import org.springframework.boot.*;
 import org.springframework.boot.autoconfigure.*;
 import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.*;
+import org.springframework.security.authentication.*;
+import org.springframework.security.config.annotation.authentication.configuration.*;
 import org.springframework.security.crypto.bcrypt.*;
 
-
+import com.auth0.jwt.algorithms.*;
 import com.cloudinary.*;
 import com.cloudinary.utils.*;
+import com.auth0.jwt.algorithms.*;
 
 @SpringBootApplication
 @EnableJpaAuditing
@@ -22,12 +28,4 @@ public class TechnApplication {
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder(10);
     }
-    
-//    Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-//    		//hide this info
-//    "cloud_name", "da6su05rx",
-//    "api_key", "658295152147355",
-//    "api_secret", "uESbpI7kfembW62YMJtirgH4BfE",
-//    "secure", true));
-  
 }

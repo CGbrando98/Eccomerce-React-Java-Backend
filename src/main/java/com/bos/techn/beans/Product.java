@@ -79,6 +79,6 @@ public class Product {
 		this.productCreatedDate = productCreatedDate;
 		this.productLastModifiedDate = productLastModifiedDate;
 		this.productUser = productUser;
-//		this.productReviews = productReviews;
+		this.productReviews = productReviews;
 	}
 }

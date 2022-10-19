@@ -31,7 +31,7 @@ public class UserServicesImpl implements UserServices, UserDetailsService {
 		try {
 			// use spring security for hashing
 			user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-			user.setRole(Role.ROLE_ADMIN);
+			user.setRole(Role.ROLE_USER);
 			userDao.save(user);
 		} catch (Exception e) {
 			throw new SavingDataException("Error in Saving User Data");

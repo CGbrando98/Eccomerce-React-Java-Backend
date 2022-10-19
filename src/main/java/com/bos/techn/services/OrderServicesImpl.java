@@ -50,8 +50,6 @@ public class OrderServicesImpl implements OrderServices{
 			Order savedOrder = orderDao.save(order);
 			savedOrder.getUser().setPassword(null);
 			return savedOrder;
-			
-			
 		} catch (Exception e) {
 			throw new SavingDataException();
 		}
@@ -67,7 +65,6 @@ public class OrderServicesImpl implements OrderServices{
 		Optional<Order> optional = orderDao.findById(id);
 		optional.get().getUser().setPassword(null);
 		
-		// lambda function 
 		Supplier<OrderNotFoundException> exceptionSupplier = () -> new 
 				OrderNotFoundException("Order not found for id: "+id);
 		return optional.orElseThrow(exceptionSupplier);
@@ -104,10 +101,8 @@ public class OrderServicesImpl implements OrderServices{
 		return orderDao.save(optional.get());
 	}
 
-	
 	@Override
 	public List<Order> getOrdersByUserId(int userid) {
-		System.out.println("profile orders");
 		return orderDao.findAllByUserId(userid);
 	}
 

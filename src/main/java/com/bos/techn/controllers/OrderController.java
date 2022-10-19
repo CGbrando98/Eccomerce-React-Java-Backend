@@ -31,7 +31,6 @@ public class OrderController {
 	
 	@GetMapping("/orders/profile/{userid}")
 	public ResponseEntity<List<Order>> searchOrdersByUser(@PathVariable int userid) {
-		System.out.println("profile orders");
 		List<Order> orders = orderServices.getOrdersByUserId(userid);
 		return new ResponseEntity<List<Order>>(orders, HttpStatus.OK);
 	}
@@ -50,7 +49,6 @@ public class OrderController {
 	
 	@PutMapping("/orders/{orderid}/deliver")
 	public ResponseEntity<Order> deliverOrder(@PathVariable int orderid) throws OrderNotFoundException{
-		System.out.println("hit");
 		Order order = orderServices.deliverOrder(orderid);
 		return new ResponseEntity<Order>(order, HttpStatus.OK);
 	}

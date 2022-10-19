@@ -1,6 +1,6 @@
 package com.bos.techn.controllers;
 
-import java.io.*; 
+import java.io.*;  
 import java.text.*;
 import java.util.*;
 
@@ -19,16 +19,15 @@ import com.cloudinary.Cloudinary;
 @RestController
 public class ProductController {
 	
-	// magical instantiation
 	@Autowired
 	private ProductServices productServices;
 	
-	 Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-	    		//hide this info
-	    "cloud_name", "da6su05rx",
-	    "api_key", "658295152147355",
-	    "api_secret", "uESbpI7kfembW62YMJtirgH4BfE",
-	    "secure", true));
+	@Value("${spring.cloudinary.cloudname}")
+	String cloudName;
+	@Value("${spring.cloudinary.apikey}")
+	String apiKey;
+	@Value("${spring.cloudinary.apisecret}")
+	String apiSecret;
 	
 	@PostMapping("/products")
 	public ResponseEntity<Product> addProduct(@RequestBody Product product) throws SavingDataException {
@@ -79,12 +78,18 @@ public class ProductController {
 		return new ResponseEntity<>("Products added", HttpStatus.OK);
 	}
 	
-	
 	//img upload
 	@PostMapping("/upload")
 	public ResponseEntity<Map> upload(@RequestParam("image") MultipartFile multipartFile) throws IOException, ParseException {
-		Map uploadResult = cloudinary.uploader().upload(multipartFile.getBytes(), ObjectUtils.emptyMap());
-		System.out.println(uploadResult);
+		Map<String, String> config = new HashMap<>();
+		config.put("cloud_name", cloudName);
+		config.put("api_key", apiKey);
+		config.put("api_secret", apiSecret);
+		Cloudinary cloudinary = new Cloudinary(config);
+
+		Map uploadResult = cloudinary.uploader().upload(multipartFile.getBytes(), ObjectUtils.asMap(
+			    "folder", "techn"
+			));
 		return new ResponseEntity<>(uploadResult, HttpStatus.OK);
 	}
 	

@@ -30,11 +30,9 @@ public class UserController {
 	@Autowired
 	private UserServices userServices;
 	
-//	@Autowired
-//	private JWTUtil jwtTokenUtil;
-
-	// We don't need to return a user on save, since we will redirect 
-	//to login page. On login, user obj is returned
+	@Value("${spring.token.secret}")
+	String secret;
+	
 	@PostMapping("/users")
 	public ResponseEntity<String> addUser(@RequestBody User user) throws SavingDataException {
 		userServices.saveUser(user);
@@ -72,13 +70,11 @@ public class UserController {
 		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 			try {
 			String refresh_token = authorizationHeader.substring("Bearer ".length());
-			Algorithm algorithm = Algorithm.HMAC256("secret");
+			Algorithm algorithm = Algorithm.HMAC256(secret);
 			JWTVerifier verifier = JWT.require(algorithm).build();
 			DecodedJWT decodedJWT = verifier.verify(refresh_token);
 			String username = decodedJWT.getSubject();
 			UserDetails user = userServices.loadUserByUsername(username);
-			
-			System.out.println(user);
 			
 			String access_token = JWT.create()
 					.withSubject(String.valueOf(((User) user).getId_user()))

@@ -31,11 +31,13 @@ public class CustomAuthorFilter extends OncePerRequestFilter{
 	@Autowired
 	private UserServices userServices;
 	
+	@Value("${spring.token.secret}")
+	String secret;
+	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		// for cors
-//		response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+
 		// if the user is just logging in we don't need to do any authorization 
 		if(request.getServletPath().equals("/login") || request.getServletPath().equals("/users/token/refresh")) {
 			filterChain.doFilter(request, response);
@@ -45,7 +47,7 @@ public class CustomAuthorFilter extends OncePerRequestFilter{
 			if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 				try {
 				String token = authorizationHeader.substring("Bearer ".length());
-				Algorithm algorithm = Algorithm.HMAC256("secret");
+				Algorithm algorithm = Algorithm.HMAC256(secret);
 				JWTVerifier verifier = JWT.require(algorithm).withIssuer("auth0").build();
 				DecodedJWT decodedJWT = verifier.verify(token);
 				int id = Integer.valueOf(decodedJWT.getSubject());

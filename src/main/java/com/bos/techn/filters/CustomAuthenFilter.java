@@ -24,11 +24,12 @@ import com.fasterxml.jackson.databind.*;
 
 public class CustomAuthenFilter extends UsernamePasswordAuthenticationFilter{
 	
-	
 	private AuthenticationManager authManager;
+	private Algorithm algorithm;
 	
-	public CustomAuthenFilter(AuthenticationManager authManager) {
+	public CustomAuthenFilter(AuthenticationManager authManager, Algorithm algorithm ) {
 		this.authManager = authManager;
+		this.algorithm =algorithm;
 	}
 
 	@Override
@@ -40,7 +41,6 @@ public class CustomAuthenFilter extends UsernamePasswordAuthenticationFilter{
 		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password);
 		System.out.println("attempt login");
 		return authManager.authenticate(authToken);
-		
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class CustomAuthenFilter extends UsernamePasswordAuthenticationFilter{
 		System.out.println("success login");
 		User user = (User) authentication.getPrincipal();
 		// place secret in safe place for prod
-		Algorithm algorithm = Algorithm.HMAC256("secret");
+//		Algorithm algorithm = Algorithm.HMAC256(secret);
 		String access_token = JWT.create()
 				.withSubject(String.valueOf(user.getId_user()))
 				.withExpiresAt(new Date(System.currentTimeMillis()+ 60*60*1000))
@@ -70,9 +70,7 @@ public class CustomAuthenFilter extends UsernamePasswordAuthenticationFilter{
 		user.setPassword(null);
 		userInfo.put("userInfo", user);
 		
-		
 		response.setContentType("application/json");
-//		response.sendRedirect("http://localhost:3000");
 		new ObjectMapper().writeValue(response.getOutputStream(), userInfo);
 		System.out.println(userInfo);
 	}
