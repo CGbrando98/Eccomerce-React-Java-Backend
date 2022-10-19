@@ -57,7 +57,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
     	auth.userDetailsService(userServices).passwordEncoder(bCryptPasswordEncoder);
     }
-
 	
    @Override
    protected void configure(HttpSecurity http) throws Exception {
@@ -82,5 +81,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
       
       http.addFilter(new CustomAuthenFilter(authManagerBean(),algorithmBean() ));
       http.addFilterBefore(customAuthorFilter, UsernamePasswordAuthenticationFilter.class);
+      
+      http.requiresChannel()
+      .requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
+      .requiresSecure();
   }
 }
