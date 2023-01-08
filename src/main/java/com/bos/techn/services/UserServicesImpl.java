@@ -38,8 +38,7 @@ public class UserServicesImpl implements UserServices, UserDetailsService {
 		}
 	}
 
-
-	public User getUser(int id) throws UserNotFoundException {
+	public User getUser(UUID id) throws UserNotFoundException {
 		Optional<User> optional = userDao.findById(id);
 		// lambda function 
 		Supplier<UserNotFoundException> exceptionSupplier = () -> new 
@@ -54,7 +53,7 @@ public class UserServicesImpl implements UserServices, UserDetailsService {
 	}
 	
 	@Override
-	public User updateUser(User newUser, int id) throws UserNotFoundException {
+	public User updateUser(User newUser, UUID id) throws UserNotFoundException {
 		try {
 			Optional<User> optional = userDao.findById(id);
 			Supplier<UserNotFoundException> exceptionSupplier = () -> new 
@@ -87,7 +86,7 @@ public class UserServicesImpl implements UserServices, UserDetailsService {
 			}
 		}
 
-	public void deleteUser(int id) throws UserNotFoundException {
+	public void deleteUser(UUID id) throws UserNotFoundException {
 		try {
 			userDao.deleteById(id);
 		}

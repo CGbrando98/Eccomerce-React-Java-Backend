@@ -30,31 +30,31 @@ public class OrderController {
 	
 	
 	@GetMapping("/orders/profile/{userid}")
-	public ResponseEntity<List<Order>> searchOrdersByUser(@PathVariable int userid) {
+	public ResponseEntity<List<Order>> searchOrdersByUser(@PathVariable UUID userid) {
 		List<Order> orders = orderServices.getOrdersByUserId(userid);
 		return new ResponseEntity<List<Order>>(orders, HttpStatus.OK);
 	}
 	
 	@GetMapping("/orders/{orderid}")
-	public ResponseEntity<Order> searchOrder(@PathVariable int orderid) throws OrderNotFoundException{
+	public ResponseEntity<Order> searchOrder(@PathVariable UUID orderid) throws OrderNotFoundException{
 		Order order = orderServices.getOrder(orderid);
 		return new ResponseEntity<Order>(order, HttpStatus.OK);
 	}
 	
 	@PutMapping("/orders/{orderid}/pay")
-	public ResponseEntity<Order> payOrder(@PathVariable int orderid,@RequestBody PaymentResult payment) throws OrderNotFoundException{
+	public ResponseEntity<Order> payOrder(@PathVariable UUID orderid,@RequestBody PaymentResult payment) throws OrderNotFoundException{
 		Order order = orderServices.payOrder(orderid, payment);
 		return new ResponseEntity<Order>(order, HttpStatus.OK);
 	}
 	
 	@PutMapping("/orders/{orderid}/deliver")
-	public ResponseEntity<Order> deliverOrder(@PathVariable int orderid) throws OrderNotFoundException{
+	public ResponseEntity<Order> deliverOrder(@PathVariable UUID orderid) throws OrderNotFoundException{
 		Order order = orderServices.deliverOrder(orderid);
 		return new ResponseEntity<Order>(order, HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/orders/{orderid}")
-	public ResponseEntity<String> removeOrder( @PathVariable int orderid) throws OrderNotFoundException{
+	public ResponseEntity<String> removeOrder( @PathVariable UUID orderid) throws OrderNotFoundException{
 		orderServices.deleteOrder(orderid);
 		return new ResponseEntity<>("Order deleted", HttpStatus.OK);
 	}

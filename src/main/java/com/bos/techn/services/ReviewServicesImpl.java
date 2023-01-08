@@ -25,7 +25,7 @@ public class ReviewServicesImpl implements ReviewServices{
 	private UserDAO userDao;
 	
 	@Override
-	public Review saveReview(Review review, int productid) throws SavingDataException {
+	public Review saveReview(Review review, UUID productid) throws SavingDataException {
 		try {
 			
 			Optional<Product> optionalProduct = productDao.findById(productid);
@@ -33,7 +33,7 @@ public class ReviewServicesImpl implements ReviewServices{
 					ProductNotFoundException("Product not found");
 
 			List<Review> reviews = optionalProduct.get().getProductReviews().stream().filter(r->
-				r.getReviewUser().getId_user()==review.getUserid()).collect(Collectors.toList());
+				r.getReviewUser().getId_user().equals(review.getUserid())).collect(Collectors.toList());
 
 			if (reviews.isEmpty()) {
 			
@@ -52,11 +52,10 @@ public class ReviewServicesImpl implements ReviewServices{
 		} catch (Exception e) {
 			throw new SavingDataException();
 		}
-
 	}
 
 	@Override
-	public Review getReview(int id) throws ReviewNotFoundException {
+	public Review getReview(UUID id) throws ReviewNotFoundException {
 		Optional<Review> optional = reviewDao.findById(id);
 		Supplier<ReviewNotFoundException> exceptionSupplier = () -> new 
 				ReviewNotFoundException("Review not found for id: "+id);
@@ -64,7 +63,7 @@ public class ReviewServicesImpl implements ReviewServices{
 	}
 
 	@Override
-	public void deleteReview(int id) throws ReviewNotFoundException {
+	public void deleteReview(UUID id) throws ReviewNotFoundException {
 		try {
 			reviewDao.deleteById(id);
 		}

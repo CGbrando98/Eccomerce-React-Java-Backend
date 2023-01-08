@@ -36,7 +36,7 @@ public class ProductController {
 	}
 	
 	@GetMapping("/products/{productid}")
-	public ResponseEntity<Product> searchProduct(@PathVariable int productid) throws ProductNotFoundException {
+	public ResponseEntity<Product> searchProduct(@PathVariable UUID productid) throws ProductNotFoundException {
 		Product product = productServices.getProduct(productid);
 		return new ResponseEntity<Product>(product,HttpStatus.OK);
 	}
@@ -54,14 +54,14 @@ public class ProductController {
 	}
 	
 	@PutMapping("/products/{productid}")
-	public ResponseEntity<String> changeProduct(@RequestBody Product product, @PathVariable int productid) 
+	public ResponseEntity<String> changeProduct(@RequestBody Product product, @PathVariable UUID productid) 
 			throws ProductNotFoundException{
 		productServices.updateProduct(product, productid);
 		return new ResponseEntity<>("Product details updated", HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/products/{productid}")
-	public ResponseEntity<String> removeProduct( @PathVariable int productid) throws ProductNotFoundException{
+	public ResponseEntity<String> removeProduct( @PathVariable UUID productid) throws ProductNotFoundException{
 		productServices.deleteProduct(productid);
 		return new ResponseEntity<>("Product deleted", HttpStatus.OK);
 	}

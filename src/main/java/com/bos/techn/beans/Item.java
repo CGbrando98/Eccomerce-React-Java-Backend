@@ -4,7 +4,10 @@ import java.time.*;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
+import org.hibernate.annotations.*;
 import org.springframework.data.jpa.domain.support.*;
 
 import lombok.*;
@@ -18,8 +21,9 @@ import lombok.*;
 public class Item {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id_item;
+	@GeneratedValue
+	@Type(type="uuid-char")
+	private UUID id_item;
 	
 	private String name;
 	private int qty;
@@ -27,7 +31,7 @@ public class Item {
 	
 	// prod id from react
 	@Transient
-	private int product;
+	private UUID product;
 	
 	@OneToOne
 	@JoinColumn(name="id_product")

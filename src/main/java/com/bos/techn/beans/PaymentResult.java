@@ -24,8 +24,9 @@ import lombok.*;
 public class PaymentResult {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id_payment;
+	@GeneratedValue
+	@Type(type="uuid-char")
+	private UUID id_payment;
 	private String id_paymentpaypal;
 	private String paymentstatus;
 	private String paymentupdatetime;

@@ -8,8 +8,8 @@ import com.bos.techn.exceptions.*;
 
 public interface UserServices extends UserDetailsService{
 	void saveUser(User user) throws SavingDataException;
-	User getUser(int id) throws UserNotFoundException;
-	void deleteUser(int id) throws UserNotFoundException;
-	User updateUser(User user, int userid) throws UserNotFoundException;
+	User getUser(UUID userid) throws UserNotFoundException;
+	void deleteUser(UUID userid) throws UserNotFoundException;
+	User updateUser(User user, UUID userid) throws UserNotFoundException;
 	List<User> getUsers();
 }

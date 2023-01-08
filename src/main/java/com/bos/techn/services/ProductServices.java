@@ -8,9 +8,9 @@ import com.bos.techn.exceptions.*;
 
 public interface ProductServices {
 	Product saveProduct(Product product) throws SavingDataException;
-	Product getProduct(int id) throws ProductNotFoundException;
-	void deleteProduct(int id) throws ProductNotFoundException;
-	void updateProduct(Product product, int id) throws ProductNotFoundException;
+	Product getProduct(UUID productid) throws ProductNotFoundException;
+	void deleteProduct(UUID productid) throws ProductNotFoundException;
+	Product updateProduct(Product product, UUID productid) throws ProductNotFoundException;
 	Map<String, Object> getProducts(int page);
 	void saveBulkProducts(List<Product> products);
 	Map<String, Object> getProductsByName(int page, String keyword);

@@ -3,6 +3,7 @@ package com.bos.techn.services;
 import java.time.*;
 import java.util.*;
 import java.util.function.*;
+import java.util.stream.*;
 
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
@@ -57,31 +58,42 @@ public class OrderServicesImpl implements OrderServices{
 	
 	@Override
 	public List<Order> getOrders() {
-		return orderDao.findAll();
+		List<Order> orders = orderDao.findAll();
+		for (int i =0; i<orders.size(); i++) {
+			orders.get(i).getUser().setPassword(null);
+		}
+		return orders;
 	}
 
 	@Override
-	public Order getOrder(int id) throws OrderNotFoundException {
+	public Order getOrder(UUID id) throws OrderNotFoundException {
 		Optional<Order> optional = orderDao.findById(id);
-		optional.get().getUser().setPassword(null);
 		
 		Supplier<OrderNotFoundException> exceptionSupplier = () -> new 
 				OrderNotFoundException("Order not found for id: "+id);
+		
+		optional.get().getUser().setPassword(null);
 		return optional.orElseThrow(exceptionSupplier);
 	}
 	
 	@Override
-	public Order payOrder(int id, PaymentResult payment ) throws OrderNotFoundException {
+	public Order payOrder(UUID id, PaymentResult payment ) throws OrderNotFoundException {
 		try {
 			Optional<Order> optional = orderDao.findById(id);
 			Supplier<OrderNotFoundException> exceptionSupplier = () -> new 
 					OrderNotFoundException("Order not found for id: "+id);
 
-			optional.get().setPayment(payment);
+			optional.get().getPayment().setId_paymentpaypal(payment.getId_paymentpaypal());
+			optional.get().getPayment().setPaymentemail(payment.getPaymentemail());
+			optional.get().getPayment().setPaymentstatus(payment.getPaymentstatus());
+			optional.get().getPayment().setPaymentupdatetime(payment.getPaymentupdatetime());
 			optional.get().setIspaid(true);
 			optional.get().setPaidat(LocalDateTime.now());
 			
-			return orderDao.save(optional.get());
+			Order savedOrder = orderDao.save(optional.get());
+			savedOrder.getUser().setPassword(null);
+			return savedOrder;
+
 			} catch (Exception e) {
 				throw new OrderNotFoundException("Could not find Order to update with "
 						+ "id: "+ id);
@@ -89,25 +101,30 @@ public class OrderServicesImpl implements OrderServices{
 		}
 	
 	@Override
-	public Order deliverOrder(int id) {
+	public Order deliverOrder(UUID id) {
 		Optional<Order> optional = orderDao.findById(id);
 		Supplier<OrderNotFoundException> exceptionSupplier = () -> new 
 				OrderNotFoundException("Order not found for id: "+id);
 		
-		System.out.println(optional.get());
 		optional.get().setIsdelivered(true);
 		optional.get().setDeliveredat(LocalDateTime.now());
 		
-		return orderDao.save(optional.get());
+		Order savedOrder = orderDao.save(optional.get());
+		savedOrder.getUser().setPassword(null);
+		return savedOrder; 
 	}
 
 	@Override
-	public List<Order> getOrdersByUserId(int userid) {
-		return orderDao.findAllByUserId(userid);
+	public List<Order> getOrdersByUserId(UUID userid) {
+		List<Order> orders = orderDao.findAllByUserId(userid);
+		for (int i =0; i<orders.size(); i++) {
+			orders.get(i).getUser().setPassword(null);
+		}
+		return orders;
 	}
 
 	@Override
-	public void deleteOrder(int id) throws OrderNotFoundException {
+	public void deleteOrder(UUID id) throws OrderNotFoundException {
 		try {
 			orderDao.deleteById(id);
 		}
