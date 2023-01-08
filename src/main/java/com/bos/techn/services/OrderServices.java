@@ -7,10 +7,10 @@ import com.bos.techn.exceptions.*;
 
 public interface OrderServices {
 	Order saveOrder(Order cart) throws SavingDataException;
-	Order getOrder(int id) throws OrderNotFoundException;
-	void deleteOrder(int id) throws OrderNotFoundException;
-	Order payOrder(int id, PaymentResult payment) throws OrderNotFoundException;
-	Order deliverOrder(int id);
-	List<Order> getOrdersByUserId(int userid);
+	Order getOrder(UUID orderid) throws OrderNotFoundException;
+	void deleteOrder(UUID orderid) throws OrderNotFoundException;
+	Order payOrder(UUID orderid, PaymentResult payment) throws OrderNotFoundException;
+	Order deliverOrder(UUID orderid);
+	List<Order> getOrdersByUserId(UUID userid);
 	List<Order> getOrders();
 }

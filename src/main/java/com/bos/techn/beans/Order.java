@@ -25,11 +25,13 @@ import lombok.*;
 @Getter
 @Setter 
 @NoArgsConstructor
+@ToString
 public class Order {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id_order;
+	@GeneratedValue
+	@Type(type="uuid-char")
+	private UUID id_order;
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	@OnDelete(action = OnDeleteAction.CASCADE)
@@ -54,7 +56,7 @@ public class Order {
 	private User user;
 	
 	@Transient
-	private int userid;
+	private UUID userid;
 	
 	private String paymentmethod;
 	private double itemsprice;

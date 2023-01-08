@@ -46,20 +46,20 @@ public class UserController {
 	}
 	
 	@GetMapping("/users/{userid}")
-	public ResponseEntity<User> searchUser(@PathVariable int userid) throws UserNotFoundException{
+	public ResponseEntity<User> searchUser(@PathVariable UUID userid) throws UserNotFoundException{
 		User user = userServices.getUser(userid);
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
 	
 	@PutMapping("/users/{userid}")
-	public ResponseEntity<User> changeUser(@RequestBody User user, @PathVariable int userid) 
+	public ResponseEntity<User> changeUser(@RequestBody User user, @PathVariable UUID userid) 
 			throws UserNotFoundException{
 		User userUpdated = userServices.updateUser(user, userid);
 		return new ResponseEntity<>(userUpdated, HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/users/{userid}")
-	public ResponseEntity<String> removeUser( @PathVariable int userid) throws UserNotFoundException{
+	public ResponseEntity<String> removeUser( @PathVariable UUID userid) throws UserNotFoundException{
 		userServices.deleteUser(userid);
 		return new ResponseEntity<>("User deleted", HttpStatus.OK);
 	}
@@ -73,12 +73,16 @@ public class UserController {
 			Algorithm algorithm = Algorithm.HMAC256(secret);
 			JWTVerifier verifier = JWT.require(algorithm).build();
 			DecodedJWT decodedJWT = verifier.verify(refresh_token);
-			String username = decodedJWT.getSubject();
+			UUID id = UUID.fromString(decodedJWT.getSubject());
+			String username = userServices.getUser(id).getUsername();
+			
 			UserDetails user = userServices.loadUserByUsername(username);
+			System.out.println(user);
 			
 			String access_token = JWT.create()
 					.withSubject(String.valueOf(((User) user).getId_user()))
-					.withExpiresAt(new Date(System.currentTimeMillis()+ 10*60*1000))
+					//1*60*1000
+					.withExpiresAt(new Date(System.currentTimeMillis()+ 5*1000))
 					.withIssuer("auth0")
 					.sign(algorithm);
 			
@@ -89,11 +93,10 @@ public class UserController {
 			new ObjectMapper().writeValue(response.getOutputStream(), tokens);
 
 			} catch (Exception e) {
-				System.err.println("Error Logging in!");
 				response.setHeader("Error", e.getMessage());
 				response.setStatus(403);
 				Map<String, String> error = new HashMap<>();
-				error.put("error_msg", e.getMessage());
+				error.put("message", "Refresh: "+e.getMessage());
 				response.setContentType("application/json");
 				new ObjectMapper().writeValue(response.getOutputStream(), error);
 			}

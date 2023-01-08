@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.*;
 
 import com.bos.techn.beans.*;
 
-public interface UserDAO extends JpaRepository<User, Integer>{
+public interface UserDAO extends JpaRepository<User, UUID>{
 	User findByUsername(String username);
 }

@@ -24,8 +24,9 @@ import lombok.*;
 public class ShippingAddress {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id_shipping;
+	@GeneratedValue
+	@Type(type="uuid-char")
+	private UUID id_shipping;
 	private String address;
 	private String city;
 	private String postal;

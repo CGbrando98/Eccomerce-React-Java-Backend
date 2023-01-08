@@ -7,12 +7,12 @@ import org.springframework.data.repository.query.*;
 
 import com.bos.techn.beans.*;
 
-public interface OrderDAO extends JpaRepository<Order, Integer>{
+public interface OrderDAO extends JpaRepository<Order, UUID>{
 	 @Query("""
 	           select o
 	           from Order o
 	           where o.user.id_user = ?1
 	            """)
-	List<Order> findAllByUserId(int userid);
+	List<Order> findAllByUserId(UUID userid);
 }
 

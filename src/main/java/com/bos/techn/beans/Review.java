@@ -30,8 +30,9 @@ public class Review {
 	//there is a problem with getting reviews
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id_review;
+	@GeneratedValue
+	@Type(type="uuid-char")
+	private UUID id_review;
 	
 	private double rating;
 	private String comment;
@@ -47,7 +48,7 @@ public class Review {
 	private User reviewUser;
 	
 	@Transient
-	private int userid;
+	private UUID userid;
 	
 	public Review(double rating, String comment, User reviewUser, Product reviewProduct) {
 		super();

@@ -23,14 +23,15 @@ import lombok.*;
 // added for auditing - letting spring update metadata
 @EntityListeners(AuditingEntityListener.class)
 @Getter
-@Setter 
+@Setter
 @NoArgsConstructor
 @ToString
 public class Product {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id_product;
+	@GeneratedValue
+	@Type(type="uuid-char")
+	private UUID id_product;
 	private String name;
 	private String image;
 	private String description;
@@ -57,11 +58,12 @@ public class Product {
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	// add product_id to reviews table
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name="id_product")
 	private List<Review> productReviews;
 	
 	@Transient
-	private int userid;
+	private UUID userid;
 
 	public Product(String productname, String image, String description, String brand, String category, double price,
 			int stock, double avgrating, int reviews, Date productCreatedDate, Date productLastModifiedDate,

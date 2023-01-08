@@ -46,24 +46,26 @@ public class CustomAuthorFilter extends OncePerRequestFilter{
 			String authorizationHeader = request.getHeader("Authorization");
 			if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 				try {
+					// thrown an error always
+	
 				String token = authorizationHeader.substring("Bearer ".length());
 				Algorithm algorithm = Algorithm.HMAC256(secret);
 				JWTVerifier verifier = JWT.require(algorithm).withIssuer("auth0").build();
 				DecodedJWT decodedJWT = verifier.verify(token);
-				int id = Integer.valueOf(decodedJWT.getSubject());
+				UUID id = UUID.fromString(decodedJWT.getSubject());
 				String username = userServices.getUser(id).getUsername();
-				
+
 				UserDetails userDetails = userServices.loadUserByUsername(username);
 				UsernamePasswordAuthenticationToken authToken = new 
 						UsernamePasswordAuthenticationToken(username, null, userDetails.getAuthorities());
 				SecurityContextHolder.getContext().setAuthentication(authToken);
-				
+//				throw new Exception();
 				} catch (Exception e) {
 					System.err.println("Error Logging in!");
 					response.setHeader("Error", e.getMessage());
 					response.setStatus(403);
 					Map<String, String> error = new HashMap<>();
-					error.put("error_msg", e.getMessage());
+					error.put("message", "Access: "+e.getMessage());
 					response.setContentType("application/json");
 					new ObjectMapper().writeValue(response.getOutputStream(), error);
 				}

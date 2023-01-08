@@ -4,8 +4,11 @@ import java.time.*;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
+import org.hibernate.annotations.*;
 import org.springframework.data.annotation.*;
 import org.springframework.data.jpa.domain.support.*;
 import org.springframework.security.core.*;
@@ -27,8 +30,9 @@ public class User implements UserDetails{
 
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id_user;
+	@GeneratedValue
+	@Type(type="uuid-char")
+	private UUID id_user;
 	@Column(unique=true)
 	private String username;
 	@Column(unique=true)
